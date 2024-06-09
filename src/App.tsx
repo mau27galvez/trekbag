@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import BackgroundHeading from "./components/BackgroundHeading"
 import Footer from "./components/Footer"
 import Header from "./components/Header"
@@ -12,11 +12,20 @@ export type Item = {
 }
 
 function App() {
-  const [items, setItems] = useState<Item[]>([
-    { id: new Date().setMinutes(2).toString(), text: "Good mood", isPacked: true },
-    { id: new Date().setMinutes(1).toString(), text: "Passport", isPacked: false },
-    { id: new Date().setMinutes(6).toString(), text: "Jacket", isPacked: false },
-  ]);
+  const initialItems = [
+    { id: "1", text: "Good mood", isPacked: true },
+    { id: "2", text: "Passport", isPacked: false },
+    { id: "3", text: "Jacket", isPacked: false },
+  ];
+  const [items, setItems] = useState<Item[]>(() => {
+    const savedItems = JSON.parse(localStorage.getItem("items") || "[]");
+
+    if (savedItems && savedItems.length > 0) {
+      return savedItems;
+    }
+
+    return initialItems;
+  });
 
   const addItem = (text: string) => setItems((prevItems) => [...prevItems, {
     id: new Date().toString(),
@@ -66,16 +75,20 @@ function App() {
     });
   }
 
-  const resetItemsToInitial = () => { }
+  const resetItemsToInitial = () => setItems(initialItems)
 
   const removeAllItems = () => setItems([])
+
+  useEffect(() => {
+    localStorage.setItem("items", JSON.stringify(items));
+  }, [items]);
 
   return (
     <>
       <BackgroundHeading />
 
       <main>
-        <Header />
+        <Header packedItemsCount={items.filter(item => item.isPacked).length} totalItemsCount={items.length}  />
         <ItemList
           items={items}
           onToggleItem={toggleItem}

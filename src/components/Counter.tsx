@@ -1,5 +1,11 @@
-export default function Counter() {
+export default function Counter({
+  checked,
+  total,
+}: {
+  checked: number;
+  total: number;
+}) {
   return (
-    <p><b>1</b> / 3 items packed</p>
+    <p><b>{checked}</b> / {total} items packed</p>
   )
 }
