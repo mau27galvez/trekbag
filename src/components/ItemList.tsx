@@ -1,6 +1,6 @@
 import Select from "react-select"
 import type { Item } from "../App"
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 export default function ItemList({
   items,
@@ -12,7 +12,7 @@ export default function ItemList({
   onRemoveItem: (id: string) => void,
 }) {
   const [sortBy, setSortBy] = useState("default");
-  const sortedItems = [...items].sort((a, b) => {
+  const sortedItems = useMemo(() => [...items].sort((a, b) => {
     if (sortBy === "packed") {
       return Number(b.isPacked) - Number(a.isPacked);
     }
@@ -20,7 +20,7 @@ export default function ItemList({
       return Number(a.isPacked) - Number(b.isPacked);
     }
     return 0;
-  })
+  }), [items, sortBy])
 
   const sortingOptions = [
     { label: "Sort by default", value: "default" },
