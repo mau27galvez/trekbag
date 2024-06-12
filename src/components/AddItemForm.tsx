@@ -1,7 +1,9 @@
 import { useRef, useState } from "react";
 import Button from "./Button";
 
-export default function AddItemForm({ onAddItem }: { onAddItem: (text: string) => void } ) {
+export default function AddItemForm({ onSubmit }: {
+  onSubmit: (name: string) => void;
+}) {
   const [name, setName] = useState("");
   const newItemNameInput = useRef<HTMLInputElement | null>(null);
 
@@ -15,7 +17,7 @@ export default function AddItemForm({ onAddItem }: { onAddItem: (text: string) =
       return;
     }
 
-    onAddItem(sanitizedName);
+    onSubmit(sanitizedName);
     setName("");
   }
 

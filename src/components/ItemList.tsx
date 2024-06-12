@@ -1,16 +1,11 @@
 import Select from "react-select"
 import type { Item } from "../App"
 import { useMemo, useState } from "react";
+import useItemsStore from "../stores/itemsStore";
 
-export default function ItemList({
-  items,
-  onToggleItem,
-  onRemoveItem
-}: {
-  items: Item[],
-  onToggleItem: (id: string) => void,
-  onRemoveItem: (id: string) => void,
-}) {
+export default function ItemList() {
+  const items = useItemsStore(state => state.items);
+
   const [sortBy, setSortBy] = useState("default");
   const sortedItems = useMemo(() => [...items].sort((a, b) => {
     if (sortBy === "packed") {
@@ -40,28 +35,22 @@ export default function ItemList({
           />
         </section>
       }
-      {sortedItems.map(item => <Item item={item} onToggleItem={onToggleItem} onRemoveItem={onRemoveItem} key={item.id} />)}
+      {sortedItems.map(item => <Item item={item} key={item.id} />)}
     </ul>
   )
 }
 
-function Item({
-  item,
-  onToggleItem,
-  onRemoveItem
-}: {
-  item: Item,
-  onToggleItem: (id: string) => void,
-  onRemoveItem: (id: string) => void,
-}) {
+function Item({ item }: { item: Item }) {
+  const { toggleItem, removeItem } = useItemsStore();
+
   return (
     <li className="item">
       <label>
-        <input type="checkbox" checked={item.isPacked} onChange={() => onToggleItem(item.id)} />
+        <input type="checkbox" checked={item.isPacked} onChange={() => toggleItem(item.id)} />
         {item.text}
       </label>
 
-      <button onClick={() => onRemoveItem(item.id)}>❌</button>
+      <button onClick={() => removeItem(item.id)}>❌</button>
     </li>
   )
 }

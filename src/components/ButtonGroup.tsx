@@ -1,16 +1,20 @@
+import { useShallow } from "zustand/react/shallow";
+import useItemsStore from "../stores/itemsStore";
 import Button from "./Button";
 
-export default function ButtonGroup({
-  markAllItemsAsComplete,
-  markAllItemsAsIncomplete,
-  resetItemsToInitial,
-  removeAllItems,
-}: {
-  markAllItemsAsComplete: () => void,
-  markAllItemsAsIncomplete: () => void,
-  resetItemsToInitial: () => void,
-  removeAllItems: () => void,
-}) {
+export default function ButtonGroup() {
+  const {
+    markAllItemsAsComplete,
+    markAllItemsAsIncomplete,
+    resetItemsToInitial,
+    removeAllItems,
+  } = useItemsStore(useShallow(state => ({
+    markAllItemsAsComplete: state.markAllItemsAsComplete,
+    markAllItemsAsIncomplete: state.markAllItemsAsIncomplete,
+    resetItemsToInitial: state.resetItemsToInitial,
+    removeAllItems: state.removeAllItems,
+  })));
+
   return (
     <section className="button-group">
       <Button
@@ -30,5 +34,5 @@ export default function ButtonGroup({
         onClick={removeAllItems}
       >Remove all items</Button>
     </section>
-  )
+  );
 }
